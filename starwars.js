@@ -1,6 +1,7 @@
 // Seu javascript aqui :)
 import { play } from './music-sem-private.js';
-import { AlgarismosArabicosParaRomanos } from './roman.js'
+import { AlgarismosArabicosParaRomanos } from './roman.js';
+import { restartAnimation } from './restart-animation.js';
 const musicConfiguration = {
     audioUrl: 'audio/tema-sw.mp3',
     coverImageUrl: 'imgs/logo.svg',
@@ -22,9 +23,10 @@ try {
     const listaFilmesBruta = dados.results;
 
 
-    function Filme(titulo, episodio) {//funcao construtora
+    function Filme(titulo, episodio, conteudo) {//funcao construtora
         this.titulo = titulo;
         this.episodio = episodio;
+        this.conteudo = conteudo;
 
         this.getTitulo = () => {
             return this.titulo;
@@ -32,11 +34,14 @@ try {
         this.getEpisodio = () => {
             return this.episodio;
         }
+        this.getConteudo = () => {
+            return this.conteudo;
+        }
 
     }
     let listaFilme = [];
     for (let item of listaFilmesBruta) {
-        let filme = new Filme(item.title, item.episode_id);
+        let filme = new Filme(item.title, item.episode_id, item.opening_crawl);
         listaFilme.push(filme);
     }
 
@@ -49,17 +54,50 @@ try {
     //treinar for
     for (let i in listaFilme) {
         let episodio = listaFilme[i].getEpisodio();
-        episodio = AlgarismosArabicosParaRomanos(episodio).padEnd(3, ' ');
+        let episodioRomano = AlgarismosArabicosParaRomanos(episodio).padEnd(3, ' ');
         let titulo = listaFilme[i].getTitulo();
 
         let template = `
-              <li>Episode ${episodio} - ${titulo} </li>
+              <li>Episode ${episodioRomano} - ${titulo} </li>
             `;
-        const filemEl = document.createRange().createContextualFragment(template);
-        listaEl.appendChild(filemEl);
+        const filmeEl = document.createRange().createContextualFragment(template);
+        filmeEl.querySelector('li').id = `${episodio - 1}`;
+        listaEl.appendChild(filmeEl);
     }
 
+    //exercicio 03
+    const listaFilmesNaPagina = document.querySelectorAll('#filmes>ul>li');
+    for (const filmeEl of listaFilmesNaPagina) {
+        filmeEl.addEventListener('click', mostraIntro);
+    }
 
+    function mostraIntro(e) {
+        const introEL = document.querySelector('.container-introducao');
+        introEL.innerHTML = '';
+        let el = e.currentTarget;
+
+        let id = el.id;
+        console.log(id);
+        let episodioRomano = listaFilme[id].getEpisodio();
+        let titulo = (listaFilme[id].getTitulo()).toUpperCase();
+        let conteudo = listaFilme[id].getConteudo();
+
+        const template = `
+            <pre>
+                Episode ${episodioRomano}
+                ${titulo}
+        
+                ${conteudo}
+            </pre>
+                    `;
+
+        const filmeEl = document.createRange().createContextualFragment(template);
+        filmeEl.querySelector('pre').classList.add(`introducao`);
+        filmeEl.querySelector('pre').classList.add(`introducao-animada`);
+        introEL.appendChild(filmeEl);
+        restartAnimation(filmeEl);
+
+    }
 
 
 
