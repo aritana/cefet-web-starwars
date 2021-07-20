@@ -1,5 +1,6 @@
 // Seu javascript aqui :)
-import { play } from "./music-sem-private.js"
+import { play } from './music-sem-private.js';
+import { AlgarismosArabicosParaRomanos } from './roman.js'
 const musicConfiguration = {
     audioUrl: 'audio/tema-sw.mp3',
     coverImageUrl: 'imgs/logo.svg',
@@ -48,6 +49,7 @@ try {
     //treinar for
     for (let i in listaFilme) {
         let episodio = listaFilme[i].getEpisodio();
+        episodio = AlgarismosArabicosParaRomanos(episodio);
         let titulo = listaFilme[i].getTitulo();
 
         let template = `
@@ -55,8 +57,9 @@ try {
             `;
         const filemEl = document.createRange().createContextualFragment(template);
         listaEl.appendChild(filemEl);
-
     }
+
+
 
 
 
