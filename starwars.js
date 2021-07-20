@@ -49,7 +49,7 @@ try {
     //treinar for
     for (let i in listaFilme) {
         let episodio = listaFilme[i].getEpisodio();
-        episodio = AlgarismosArabicosParaRomanos(episodio);
+        episodio = AlgarismosArabicosParaRomanos(episodio).padEnd(3, ' ');
         let titulo = listaFilme[i].getTitulo();
 
         let template = `
