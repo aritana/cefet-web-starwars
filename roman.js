@@ -7,5 +7,5 @@ export function AlgarismosArabicosParaRomanos(arabico) {
         5: "V",
         6: "VI"
     }
-    return dados[arabico]
+    return dados[arabico];
 }
