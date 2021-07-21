@@ -6,6 +6,7 @@
 export function restartAnimation(introEl) {
   // remove a classe ".introducao-animada", que faz o texto subir
   introEl.classList.remove('introducao-animada');
+  console.log(introEl);
   // define a propriedade visibility como hidden para evitar que o usuário
   // veja a animação sendo interrompida
   introEl.style.visibility = 'hidden';

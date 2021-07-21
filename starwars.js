@@ -2,6 +2,8 @@
 import { play } from './music-sem-private.js';
 import { AlgarismosArabicosParaRomanos } from './roman.js';
 import { restartAnimation } from './restart-animation.js';
+import { friendlyFetch } from './friendly-fetch.js';
+
 const musicConfiguration = {
     audioUrl: 'audio/tema-sw.mp3',
     coverImageUrl: 'imgs/logo.svg',
@@ -10,17 +12,12 @@ const musicConfiguration = {
 }
 play(musicConfiguration, document.body);
 
-// Use a Star Wars API: https://swapi.dev/
-// para fazer uma requisição assíncrona e:
-//  - Pegar a lista de filmes (AJAX) e preencher no HTML
-//  - Quando um filme for clicado, exibir sua introdução
-
 const API_ENDPOINT = 'https://swapi.dev/api';
 
 try {
-    const resposta = await fetch(`${API_ENDPOINT}/films`);
-    const dados = await resposta.json();
-    const listaFilmesBruta = dados.results;
+
+    const resposta = await friendlyFetch(`${API_ENDPOINT}/films`);
+    const listaFilmesBruta = resposta.results;
 
 
     function Filme(titulo, episodio, conteudo) {//funcao construtora
@@ -58,8 +55,8 @@ try {
         let titulo = listaFilme[i].getTitulo();
 
         let template = `
-              <li>Episode ${episodioRomano} - ${titulo} </li>
-            `;
+                  <li>Episode ${episodioRomano} - ${titulo} </li>
+                `;
         const filmeEl = document.createRange().createContextualFragment(template);
         filmeEl.querySelector('li').id = `${episodio - 1}`;
         listaEl.appendChild(filmeEl);
@@ -77,34 +74,29 @@ try {
         let el = e.currentTarget;
 
         let id = el.id;
-        console.log(id);
         let episodioRomano = listaFilme[id].getEpisodio();
         let titulo = (listaFilme[id].getTitulo()).toUpperCase();
         let conteudo = listaFilme[id].getConteudo();
 
         const template = `
-            <pre>
-                Episode ${episodioRomano}
-                ${titulo}
-        
-                ${conteudo}
-            </pre>
-                    `;
+                <pre>
+                    Episode ${episodioRomano}
+                    ${titulo}
+            
+                    ${conteudo}
+                </pre>
+                        `;
 
         const filmeEl = document.createRange().createContextualFragment(template);
         filmeEl.querySelector('pre').classList.add(`introducao`);
         filmeEl.querySelector('pre').classList.add(`introducao-animada`);
+        filmeEl.querySelector('pre').id = `click-${id}`;
         introEL.appendChild(filmeEl);
-        restartAnimation(filmeEl);
+
+        let tituloClicadoEl = document.querySelector(`#click-${id}`);
+        restartAnimation(tituloClicadoEl);
 
     }
-
-
-
-
-
-
-
 
 } catch (erro) {
     console.error(`Erro na requisição Ajax${erro}`);
